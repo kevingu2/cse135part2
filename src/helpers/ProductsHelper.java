@@ -18,9 +18,11 @@ public class ProductsHelper {
         ResultSet rs = null;
         String categoryFilter = "", searchFilter = "";
         try {
-            Integer cid = Integer.parseInt(request.getParameter("category"));
-            if (cid != null)
-                categoryFilter = "cid = " + cid;
+        	if (!request.getParameter("category").equals("-1")) {
+                Integer cid = Integer.parseInt(request.getParameter("category"));
+                if (cid != null)
+                    categoryFilter = "cid = " + cid;	
+        	}
         } catch (Exception e) {
         }
         try {
