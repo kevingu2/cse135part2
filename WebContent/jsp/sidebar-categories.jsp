@@ -16,6 +16,27 @@
                 	search = (search != null) ? search : "";
                 	String actionName = request.getParameter("actionName");
                 	actionName = (actionName != null) ? actionName : "products";
+                %>
+                <li>
+                    <form
+                        action="<%=actionName%>"
+                        method="post">
+                        <input
+                            type="text"
+                            name="search"
+                            id="search"
+                            value="<%=search%>"
+                            style="display: none"> <input
+                            type="text"
+                            name="category"
+                            id="category"
+                            value="-1"
+                            style="display: none"> <input
+                            type="submit"
+                            value="all">
+                    </form>
+                </li>
+                <%
                 	for (CategoryWithCount cwc : categories) {
                 %>
                 <li>

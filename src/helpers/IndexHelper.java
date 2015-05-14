@@ -20,6 +20,7 @@ public class IndexHelper {
                 conn = HelperUtils.connect();
             } catch (Exception e) {
                 System.out.println("Driver error");
+                e.printStackTrace();
             }
             stmt = conn.createStatement();
             ResultSet rs = null;
@@ -46,7 +47,7 @@ public class IndexHelper {
             String data = "You have successfully logged in!";
             return HelperUtils.printSuccess(data);
         } catch (Exception e) {
-            String data = "Error, can not access the database, please check the database connection...";
+            String data = "Error, can not access the database, please check the database connection..." + e.getLocalizedMessage();
             return HelperUtils.printError(data);
         }
     }
