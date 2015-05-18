@@ -21,7 +21,10 @@ public class StateHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<State>();
             }
-            String query= "Select id, name From states Order by name limit ? offset ?";
+            String query= "Select st.id, st.name, SUM(s.quantity*s.price) as total "
+            		+ "From users u, Sales s, (Select id, name From states "
+            		+ "Order by name limit ? offset ?) st Where st.id = u.state And u.id = s.uid "
+            		+ "Group by st.id, st.name Order by st.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
@@ -30,7 +33,8 @@ public class StateHelper {
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
-                states.add(new State(id, name));
+                Integer total=rs.getInt(3);
+                states.add(new State(id, name,total));
             }
             return states;
         } catch (Exception e) {

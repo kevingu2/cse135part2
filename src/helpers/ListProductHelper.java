@@ -21,7 +21,10 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select id, name From products where cid = ? Order by name limit ? offset ?";
+            String query= "Select p.id, p.name, SUM(s.quantity*s.price) as total "
+            		+ "From sales s, (Select id, name From products where cid = ? "
+            		+ "Order by name limit ? offset ? p Where p.id = s.pid "
+            		+ "Group by p.id, p.name Order by p.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1, category_id);
             stmt.setInt(2,limit);
@@ -31,7 +34,8 @@ public class ListProductHelper {
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
-                products.add(new Product(id, name));
+                Integer total=rs.getInt(3);
+                products.add(new Product(id, name, total));
             }
             return products;
         } catch (Exception e) {
@@ -59,7 +63,10 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select id, name From products Order by name limit ? offset ?";
+            String query= "Select p.id, p.name, SUM(s.quantity*s.price) as total "
+            		+ "From sales s, (Select id, name From products "
+            		+ "Order by name limit ? offset ?) p "
+            		+ "Where p.id = s.pid Group by p.id, p.name Order by p.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
@@ -68,7 +75,8 @@ public class ListProductHelper {
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
-                products.add(new Product(id, name));
+                Integer total=rs.getInt(3);
+                products.add(new Product(id, name, total));
             }
             return products;
         } catch (Exception e) {

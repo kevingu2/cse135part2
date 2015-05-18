@@ -33,6 +33,10 @@
 	String CategoryFilter = request.getParameter("CategoryFilter");
 	String poffset = request.getParameter("poffset");
 	String roffset = request.getParameter("roffset");
+	String last_row_size=request.getParameter("last_row_size");
+	String last_column_size=request.getParameter("last_column_size");
+	if(last_row_size==null){last_row_size="20";}
+	if(last_column_size==null){last_column_size="20";}
 	if(poffset==null){ poffset = "0"; }
 	if(roffset==null){ roffset = "0"; }
 	String log = "\nCreating report with the following parameters:\n" +
@@ -43,27 +47,6 @@
 				 "roffset: " + roffset + "\n";
 	System.out.println(log);
 %>
-	<form action="analytics" method="post">
-		<input type="hidden" name="RowType" value="<%= RowType %>">
-		<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
-		<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
-		<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset) %>">
-		<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset)+rowNum %>">
-		<input type="hidden" name="Hide" value="Hide">
-		<input type="hidden" name="Run" value="Run">
-		<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
-	</form>
-	
-	<form action="analytics" method="post">
-		<input type="hidden" name="RowType" value="<%= RowType %>">
-		<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
-		<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
-		<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset)+colNum %>">
-		<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset) %>">
-		<input type="hidden" name="Hide" value="Hide">
-		<input type="hidden" name="Run" value="Run">
-		<input type="submit" value="Next <%= colNum %> Products">
-	</form>
 <%	
 	List<Product> Products;
 	
@@ -82,6 +65,37 @@
 		{
 			List<Customer> Rows = CustomerHelper.listCustomersAlphabetically(rowNum, Integer.parseInt(roffset));
 %>
+			<%if(Integer.parseInt(last_row_size)>=rowNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset) %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset)+rowNum %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
+				</form>
+			<%}%>
+			<%if(Integer.parseInt(last_column_size)>=colNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset)+colNum %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset) %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= colNum %> Products">
+				</form>
+			<%}%>
+
+	
+
 		<!-- Customer Alphabetical Report -->
 		<table class="table table-striped" align="center" border="1">
 		<thead>
@@ -116,6 +130,34 @@
 		{
 			List<State> Rows = StateHelper.listStateAlphabetically(rowNum, Integer.parseInt(roffset));
 %>
+			<%if(Integer.parseInt(last_row_size)>=rowNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset) %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset)+rowNum %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
+				</form>
+			<%}%>
+			<%if(Integer.parseInt(last_column_size)>=colNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset)+colNum %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset) %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= colNum %> Products">
+				</form>
+			<%}%>
 		<!-- State Alphabetical Report -->
 		<table class="table table-striped" align="center" border="1">
 		<thead>
@@ -170,6 +212,34 @@
 				Rows = CustomerHelper.listCustomersByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
 %>
+			<%if(Integer.parseInt(last_row_size)>=rowNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset) %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset)+rowNum %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
+				</form>
+			<%}%>
+			<%if(Integer.parseInt(last_column_size)>=colNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset)+colNum %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset) %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= colNum %> Products">
+				</form>
+			<%}%>
 		<!-- Customer Top-K Report -->
 		<table class="table table-striped" align="center" border="1">
 		<thead>
@@ -212,6 +282,34 @@
 				Rows = StateHelper.listStatesByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
 %>
+			<%if(Integer.parseInt(last_row_size)>=rowNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset) %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset)+rowNum %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
+				</form>
+			<%}%>
+			<%if(Integer.parseInt(last_column_size)>=colNum){ %>
+				<form action="analytics" method="post">
+					<input type="hidden" name="RowType" value="<%= RowType %>">
+					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
+					<input type="hidden" name="CategoryFilter" value="<%= CategoryFilter %>">
+					<input type="hidden" name="poffset" value="<%= Integer.parseInt(poffset)+colNum %>">
+					<input type="hidden" name="roffset" value="<%= Integer.parseInt(roffset) %>">
+					<input type="hidden" name="Hide" value="Hide">
+					<input type="hidden" name="Run" value="Run">
+					<input type="hidden" name="last_row_size" value= "<%=Rows.size() %>">
+					<input type="hidden" name="last_column_size"value= "<%=Products.size() %>">
+					<input type="submit" value="Next <%= colNum %> Products">
+				</form>
+			<%}%>
 		<!-- State Top-K Report -->
 		<table class="table table-striped" align="center" border="1">
 		<thead>

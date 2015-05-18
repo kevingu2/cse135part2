@@ -24,7 +24,10 @@ public class CustomerHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Customer>();
             }
-            String query= "Select id, name From users Where role = 'customer' Order by name limit ? offset ?";
+            String query= "Select u.id, u.name, SUM(s.quantity*s.price) as total "
+            		+ "From sales s, (Select id, name From users Where role = 'customer' "
+            		+ "Order by name limit ? offset ?) u Where u.id = s.uid "
+            		+ "Group by u.id, u.name Order by u.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
@@ -33,7 +36,8 @@ public class CustomerHelper {
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
-                customers.add(new Customer(name, id));
+                Integer total=rs.getInt(3);
+                customers.add(new Customer(name, id,total));
             }
             return customers;
         } catch (Exception e) {
