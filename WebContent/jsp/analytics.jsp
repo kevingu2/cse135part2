@@ -41,10 +41,18 @@
                                 <div class="page-header">
                                     <h3>Analytics</h3>
                                 </div>
+                                	
+                                <!-- Misc -->
                                 <%
                                     if (nameNotNull && roleIsOwner) {
                                 %>
+                                
+                                <!-- Report Creation -->
+                                <% if(request.getParameter("Run") != null){ %>
                                 <jsp:include page="/jsp/list-analytics.jsp" />
+                                <% } %>
+                                <!-- End of Report Creation -->
+                                
                                 <%
                                     } else {
                                 %>
