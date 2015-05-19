@@ -23,7 +23,7 @@ public class ListProductHelper {
             }
             String query= "Select p.id, p.name, SUM(s.quantity*s.price) as total "
             		+ "From sales s, (Select id, name From products where cid = ? "
-            		+ "Order by name limit ? offset ? p Where p.id = s.pid "
+            		+ "Order by name limit ? offset ?) p Where p.id = s.pid "
             		+ "Group by p.id, p.name Order by p.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1, category_id);
