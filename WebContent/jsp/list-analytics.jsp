@@ -59,7 +59,15 @@
 		
 		if(RowType.equals("Customers"))
 		{
-			List<Customer> Rows = CustomerHelper.listCustomersAlphabetically(rowNum, Integer.parseInt(roffset));
+			List<Customer> Rows;
+			if(CategoryFilter.equals("All Categories")) //No Filter
+			{
+				Rows = CustomerHelper.listCustomersAlphabeticallyWithNoFilter(rowNum, Integer.parseInt(roffset));
+			}
+			else //Filter
+			{
+				Rows = CustomerHelper.listCustomersAlphabeticallyWithFilter(Integer.parseInt(CategoryFilter),rowNum, Integer.parseInt(roffset));
+			}
 %>
 			<%if(Rows.size()>=rowNum){ %>
 				<form action="analytics" method="post">
@@ -120,7 +128,15 @@
 		}
 		else
 		{
-			List<State> Rows = StateHelper.listStateAlphabetically(rowNum, Integer.parseInt(roffset));
+			List<State> Rows;
+			if(CategoryFilter.equals("All Categories")) //No Filter
+			{
+				Rows = StateHelper.listStateAlphabeticallyWithNoFilter(rowNum, Integer.parseInt(roffset));
+			}
+			else //Filter
+			{
+				Rows = StateHelper.listStateAlphabeticallyWithFilter(Integer.parseInt(CategoryFilter),rowNum, Integer.parseInt(roffset));
+			}
 %>
 			<%if(Rows.size()>=rowNum){ %>
 				<form action="analytics" method="post">

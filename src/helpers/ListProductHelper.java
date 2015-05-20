@@ -225,7 +225,7 @@ public class ListProductHelper {
                 return 0;
             }
             String query= "Select SUM(s.price*s.quantity) as total "
-            		+ "from sales s, (select id from users where state = ? AND role = 'customer') u "
+            		+ "from sales s, (select id from users where state = ?) u "
             		+ "where s.pid = ? and s.uid = u.id";
             
             stmt = conn.prepareStatement(query);
