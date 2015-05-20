@@ -1,6 +1,7 @@
 package helpers;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -10,6 +11,54 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 public class CategoriesHelper {
+	public static int getSize()
+	{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try
+		{
+			try
+			{
+				conn = HelperUtils.connect();
+			}
+			catch (Exception e)
+			{
+				System.err.println("Internal Server Error. This shouldn't happen.");
+				return 0;
+			}
+			
+			String query = "SELECT Count(*) FROM categories";
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+			if(rs.next())
+			{
+				return rs.getInt(1);
+			}
+			else
+			{
+				throw new SQLException();
+			}
+		}
+		catch (Exception e)
+		{
+			System.err.println("Some error happened!<br/>" + e.getLocalizedMessage());
+			return 0;
+		}
+		finally 
+		{
+			try 
+			{
+                stmt.close();
+                conn.close();
+            } 
+			catch (SQLException e) 
+			{
+                e.printStackTrace();
+            }
+        }
+	}
 
     public static List<CategoryWithCount> listCategories() {
         Connection conn = null;
