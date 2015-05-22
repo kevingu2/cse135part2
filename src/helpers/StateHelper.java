@@ -8,6 +8,55 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StateHelper {
+	public static int getSize()
+	{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try
+		{
+			try
+			{
+				conn = HelperUtils.connect();
+			}
+			catch (Exception e)
+			{
+				System.err.println("Internal Server Error. This shouldn't happen.");
+				return 0;
+			}
+			
+			String query = "SELECT Count(*) FROM states";
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+			if(rs.next())
+			{
+				return rs.getInt(1);
+			}
+			else
+			{
+				throw new SQLException();
+			}
+		}
+		catch (Exception e)
+		{
+			System.err.println("Some error happened!<br/>" + e.getLocalizedMessage());
+			return 0;
+		}
+		finally 
+		{
+			try 
+			{
+                stmt.close();
+                conn.close();
+            } 
+			catch (SQLException e) 
+			{
+                e.printStackTrace();
+            }
+        }
+	}
+	
 	public static List<State> listStateAlphabeticallyWithNoFilter(int limit, int offset) {
         Connection conn = null;
         PreparedStatement stmt = null;

@@ -24,6 +24,7 @@
 %>
 <%
 	// Constants for number of rows and columns on the page
+	long start = System.currentTimeMillis();
 	int rowNum = 20;
 	int colNum = 10;
 
@@ -35,6 +36,26 @@
 	String roffset = request.getParameter("roffset");
 	if(poffset==null){ poffset = "0"; }
 	if(roffset==null){ roffset = "0"; }
+	
+	int rowSize;
+	int colSize;
+	if(CategoryFilter.equals("All Categories"))
+	{
+		colSize = ListProductHelper.getSize();
+	}
+	else
+	{
+		colSize = ListProductHelper.getSizeWithFilter(Integer.parseInt(CategoryFilter));
+	}
+	if(RowType.equals("Customers"))
+	{
+		rowSize = CustomerHelper.getSize();
+	}
+	else
+	{
+		rowSize = StateHelper.getSize();
+	}
+	
 	String log = "\nCreating report with the following parameters:\n" +
 				 "Row Type: " + RowType + "\n" +
 				 "Order By: " + OrderBy + "\n" +
@@ -69,7 +90,7 @@
 				Rows = CustomerHelper.listCustomersAlphabeticallyWithFilter(Integer.parseInt(CategoryFilter),rowNum, Integer.parseInt(roffset));
 			}
 %>
-			<%if(Rows.size()>=rowNum){ %>
+			<%if( (Integer.parseInt(roffset)+rowNum) < rowSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -81,7 +102,7 @@
 					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
 				</form>
 			<%}%>
-			<%if(Products.size()>=colNum){ %>
+			<%if( (Integer.parseInt(poffset)+colNum) < colSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -125,6 +146,7 @@
 		</table>
 		<!-- End of Customer Alphabetical Report -->
 <%
+		System.out.println("Time To Generate Report: " + (System.currentTimeMillis() - start) + " ms");
 		}
 		else
 		{
@@ -138,7 +160,7 @@
 				Rows = StateHelper.listStateAlphabeticallyWithFilter(Integer.parseInt(CategoryFilter),rowNum, Integer.parseInt(roffset));
 			}
 %>
-			<%if(Rows.size()>=rowNum){ %>
+			<%if( (Integer.parseInt(roffset)+rowNum) < rowSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -150,7 +172,7 @@
 					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
 				</form>
 			<%}%>
-			<%if(Products.size()>=colNum){ %>
+			<%if( (Integer.parseInt(poffset)+colNum) < colSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -217,7 +239,7 @@
 				Rows = CustomerHelper.listCustomersByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
 %>
-			<%if(Rows.size()>=rowNum){ %>
+			<%if( (Integer.parseInt(roffset)+rowNum) < rowSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -229,7 +251,7 @@
 					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
 				</form>
 			<%}%>
-			<%if(Products.size()>=colNum){ %>
+			<%if( (Integer.parseInt(poffset)+colNum) < colSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -283,7 +305,7 @@
 				Rows = StateHelper.listStatesByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
 %>
-			<%if(Rows.size()>=rowNum){ %>
+			<%if( (Integer.parseInt(roffset)+rowNum) < rowSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -295,7 +317,7 @@
 					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
 				</form>
 			<%}%>
-			<%if(Products.size()>=colNum){ %>
+			<%if( (Integer.parseInt(poffset)+colNum) < colSize){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -337,5 +359,6 @@
 		<!-- End of State Top-K Report -->
 <%
 		}
+		System.out.println("Time To Generate Report: " + (System.currentTimeMillis() - start) + " ms");
 	}
 %>

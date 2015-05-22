@@ -11,6 +11,55 @@ public class CustomerHelper {
 	//type_ordering: name or total
 	//limit: number of customers to get
 	//offset: where to start
+	public static int getSize()
+	{
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try
+		{
+			try
+			{
+				conn = HelperUtils.connect();
+			}
+			catch (Exception e)
+			{
+				System.err.println("Internal Server Error. This shouldn't happen.");
+				return 0;
+			}
+			
+			String query = "SELECT Count(*) FROM users";
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeQuery();
+			if(rs.next())
+			{
+				return rs.getInt(1);
+			}
+			else
+			{
+				throw new SQLException();
+			}
+		}
+		catch (Exception e)
+		{
+			System.err.println("Some error happened!<br/>" + e.getLocalizedMessage());
+			return 0;
+		}
+		finally 
+		{
+			try 
+			{
+                stmt.close();
+                conn.close();
+            } 
+			catch (SQLException e) 
+			{
+                e.printStackTrace();
+            }
+        }
+	}
+	
 	public static List<Customer> listCustomersAlphabeticallyWithNoFilter(int limit, int offset) {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -33,7 +82,6 @@ public class CustomerHelper {
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
@@ -77,7 +125,6 @@ public class CustomerHelper {
             stmt.setInt(2, offset);
             stmt.setInt(3, c_id);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
