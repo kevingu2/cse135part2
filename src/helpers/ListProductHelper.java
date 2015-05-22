@@ -129,7 +129,6 @@ public class ListProductHelper {
             stmt.setInt(2,limit);
             stmt.setInt(3, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
@@ -170,7 +169,6 @@ public class ListProductHelper {
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
@@ -211,7 +209,6 @@ public class ListProductHelper {
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 String name = rs.getString(1);
                 Integer id = rs.getInt(2);
@@ -253,7 +250,6 @@ public class ListProductHelper {
             stmt.setInt(2,limit);
             stmt.setInt(3, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 String name = rs.getString(1);
                 Integer id = rs.getInt(2);
@@ -292,7 +288,6 @@ public class ListProductHelper {
             stmt.setInt(1,uid);
             stmt.setInt(2, pid);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -331,7 +326,6 @@ public class ListProductHelper {
             stmt.setInt(1,state_id);
             stmt.setInt(2, pid);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             if (rs.next()) {
                 return rs.getInt(1);
             }

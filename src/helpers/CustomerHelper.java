@@ -85,7 +85,6 @@ public class CustomerHelper {
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);
@@ -132,7 +131,6 @@ public class CustomerHelper {
             stmt.setInt(2, offset);
             stmt.setInt(3, c_id);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 Integer id = rs.getInt(1);
                 String name = rs.getString(2);

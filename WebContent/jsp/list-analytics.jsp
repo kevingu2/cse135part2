@@ -24,6 +24,7 @@
 %>
 <%
 	// Constants for number of rows and columns on the page
+	long start = System.currentTimeMillis();
 	int rowNum = 20;
 	int colNum = 10;
 
@@ -145,6 +146,7 @@
 		</table>
 		<!-- End of Customer Alphabetical Report -->
 <%
+		System.out.println("Time To Generate Report: " + (System.currentTimeMillis() - start) + " ms");
 		}
 		else
 		{
@@ -357,5 +359,6 @@
 		<!-- End of State Top-K Report -->
 <%
 		}
+		System.out.println("Time To Generate Report: " + (System.currentTimeMillis() - start) + " ms");
 	}
 %>
