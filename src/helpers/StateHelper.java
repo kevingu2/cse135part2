@@ -159,9 +159,9 @@ public class StateHelper {
 	            }
 	            String query= "Select st.name, st.id, coalesce(r.total, 0) as total "
 	            		+ "From states st left outer join (Select u.state, SUM(s.quantity*s.price) as total "
-	            		+ "From sales s, users u, products p Where p.cid = ? AND s.uid = u.id AND s.pid = p.id "
-	            		+ "Group by u.state Order by total desc  limit ? offset ?) r on r.state = st.id "
-	            		+ "Order by total desc";
+	            		+ "From sales s, users u, products p Where p.cid = ? AND s.uid = u.id "
+	            		+ "AND s.pid = p.id Group by u.state Order by total desc) r on r.state = st.id "
+	            		+ "Order by total desc limit ? offset ?";
 	    
 	            stmt = conn.prepareStatement(query);
 	            stmt.setInt(1,category_filter);
@@ -187,6 +187,7 @@ public class StateHelper {
 	            }
 	        }
 	    }
+
 		public static List<State> listStatesByTotalWithNoFilter(int limit, int offset) {
 	        Connection conn = null;
 	        PreparedStatement stmt = null;
@@ -203,8 +204,8 @@ public class StateHelper {
 	            String query= "Select st.name, st.id, coalesce(r.total, 0) as total "
 	            		+ "From states st left outer join (Select u.state, SUM(s.quantity*s.price) as total "
 	            		+ "From sales s, users u, products p where s.uid = u.id AND s.pid = p.id "
-	            		+ "Group by u.state Order by total desc limit ? offset ?) r on r.state = st.id "
-	            		+ "Order by total desc";
+	            		+ "Group by u.state Order by total desc) r on r.state = st.id "
+	            		+ "Order by total desc  limit ? offset ?";
 	            stmt = conn.prepareStatement(query);
 	            stmt.setInt(1,limit);
 	            stmt.setInt(2,offset);
