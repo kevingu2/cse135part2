@@ -24,19 +24,14 @@ public class CustomerHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Customer>();
             }//
-            String query= "SELECT one.id, one.name, COALESCE(two.total, 0) as total "
-            		+ "FROM (SELECT id, name FROM users ORDER BY name LIMIT ? OFFSET ?) one "
-            		+ "LEFT OUTER JOIN "
-            		+ "(SELECT u.id, SUM(s.quantity*s.price) as total "
-            		+ "FROM users u, Sales s, Products p "
-            		+ "WHERE u.id = s.uid AND s.pid = p.id "
-            		+ "GROUP BY u.id) AS two "
-            		+ "ON one.id = two.id ORDER BY one.name";
+            String query= "SELECT ans.id, ans.name, SUM(ans.total) AS total FROM "
+            		+ "(SELECT u.id, u.name, COALESCE((s.quantity*s.price),0) as total "
+            		+ "FROM ((SELECT u.id, u.name FROM users u ORDER BY u.name LIMIT ? OFFSET ?) u "
+            		+ "LEFT OUTER JOIN Sales s on u.id = s.uid)) ans "
+            		+ "GROUP BY ans.name, ans.id ORDER BY ans.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
-            stmt.setInt(3,limit);
-            stmt.setInt(4, offset);
             rs = stmt.executeQuery();
             System.out.println("Executed Query");
             while (rs.next()) {
@@ -71,15 +66,12 @@ public class CustomerHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Customer>();
             }
-            String query= "SELECT one.id, one.name, COALESCE(two.total, 0) as total "
-            		+ "FROM (SELECT id, name FROM users ORDER BY name LIMIT ? OFFSET ?) one "
+            String query= "SELECT ans.id, ans.name, SUM(ans.total) AS total FROM "
+            		+ "(SELECT u.id, u.name, COALESCE(sp.price*sp.quantity, 0) as total "
+            		+ "FROM (SELECT u.id, u.name FROM users u ORDER BY u.name LIMIT ? OFFSET ?) u "
             		+ "LEFT OUTER JOIN "
-            		+ "(SELECT u.id, SUM(s.quantity*s.price) as total "
-            		+ "FROM users u, Sales s, Products p "
-            		+ "WHERE u.id = s.uid AND s.pid = p.id AND p.cid = ? "
-            		+ "GROUP BY u.id) AS two "
-            		+ "ON one.id = two.id "
-            		+ "ORDER BY one.name";
+            		+ "(Sales s JOIN (SELECT id FROM Products p WHERE p.cid =  ?) p ON s.pid = p.id) sp on u.id=sp.pid)ans "
+            		+ "GROUP BY ans.name, ans.id ORDER BY ans.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
@@ -120,14 +112,11 @@ public class CustomerHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Customer>();
             }
-            String query= "Select x.id, u.name, x.total "
-            		+ "From users u, "
-            		+ "(Select id, SUM(coalesce(price*quantity, 0)) "
-            		+ "as total From (Select * from users u "
+            String query= "Select id,name, SUM(coalesce(price*quantity, 0)) "
+            		+ "as total From ((Select u.id, u.name from users u)u "
             		+ "left outer join (Select uid, quantity, price from sales where pid in  "
             		+ "(Select id from Products where cid=?))sp on sp.uid=u.id) usp "
-            		+ "Group by id Order by total DESC limit ? offset ?)x "
-            		+ "Where x.id=u.id order by x.total DESC";    
+            		+ "Group by id, name Order by total DESC limit ? offset ?";    
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,category_filter);
             stmt.setInt(2,limit);
@@ -167,13 +156,10 @@ public class CustomerHelper {
 	                System.err.println("Internal Server Error. This shouldn't happen.");
 	                return new ArrayList<Customer>();
 	            }
-	            String query= "Select x.id, u.name, x.total "
-	            		+ "From users u, "
-	            		+ "(Select id, SUM(coalesce(price*quantity, 0)) "
-	            		+ "as total From (Select * from users u "
+	            String query= "Select id,name, SUM(coalesce(price*quantity, 0)) "
+	            		+ "as total From ((Select u.id, u.name from users u)u "
 	            		+ "left outer join (Select uid, quantity, price from sales)sp on sp.uid=u.id) usp "
-	            		+ "Group by id Order by total DESC	limit ? offset ?)x "
-	            		+ "Where x.id=u.id order by x.total DESC";
+	            		+ "Group by id, name Order by total DESC limit ? offset ?";
 	            stmt = conn.prepareStatement(query);
 	            stmt.setInt(1,limit);
 	            stmt.setInt(2,offset);

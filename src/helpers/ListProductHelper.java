@@ -65,8 +65,8 @@ public class ListProductHelper {
             }
             String query= "Select p.id, p.name, SUM(s.quantity*s.price) as total "
             		+ "From sales s, (Select id, name From products "
-            		+ "Order by name limit ? offset ?) p "
-            		+ "Where p.id = s.pid Group by p.id, p.name Order by p.name";
+            		+ "Order by name limit ? offset ?) p Where p.id = s.pid "
+            		+ "Group by p.id, p.name Order by p.name";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
@@ -105,14 +105,13 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select r.name, p.pid, p.total From products r, (Select pid, SUM(price*quantity) as total From "
-            		+ "sales Group by pid Order by total desc "
-            		+ "limit ? offset ?) p Where p.pid = r.id Order by total desc";
+            String query= "Select p.name, p.id, SUM(s.price*s.quantity) as total "
+            		+ "From sales s, products p Where s.pid = p.id Group by p.id, p.name "
+            		+ "Order by total desc limit ? offset ?";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 String name = rs.getString(1);
                 Integer id = rs.getInt(2);
@@ -146,15 +145,14 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select r.name, p.pid, p.total From products r, (Select pid, SUM(price*quantity) as total From "
-            		+ "sales Where pid IN (Select id From products where cid = ?) Group by pid Order by total desc "
-            		+ "limit ? offset ?) p Where p.pid = r.id Order by total desc";
+            String query= "Select p.name, p.id, SUM(s.price*s.quantity) as total "
+            		+ "From sales s, products p Where p.cid = ? And s.pid = p.id "
+            		+ "Group by p.id, p.name Order by total desc limit ? offset ?";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1, category_id);
             stmt.setInt(2,limit);
             stmt.setInt(3, offset);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             while (rs.next()) {
                 String name = rs.getString(1);
                 Integer id = rs.getInt(2);
@@ -188,7 +186,8 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return 0;
             }
-            String query= "Select (quantity*price) as total From sales Where uid = ? and pid = ?";
+            String query= "Select SUM(r.total) From (Select (quantity*price) as total From sales "
+            		+ "Where uid = ? and pid = ?) r";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,uid);
             stmt.setInt(2, pid);
@@ -224,15 +223,14 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return 0;
             }
-            String query= "Select SUM(s.price*s.quantity) as total "
-            		+ "from sales s, (select id from users where state = ?) u "
-            		+ "where s.pid = ? and s.uid = u.id";
+            String query= "Select SUM(r.total) "
+            		+ "From (Select (quantity*price) as total "
+            		+ "From sales Where uid IN (Select id From users where state = ?) and pid = ?) r";
             
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,state_id);
             stmt.setInt(2, pid);
             rs = stmt.executeQuery();
-            System.out.println("Executed Query");
             if (rs.next()) {
                 return rs.getInt(1);
             }
