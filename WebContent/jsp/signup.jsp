@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=utf-8" language="java"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<script type="text/javascript" src="/js/signup_test.js"></script>
 <jsp:include page="/html/head.html" />
 </head>
 <body class="page-index" data-spy="scroll" data-offset="60" data-target="#toc-scroll-target">
@@ -16,6 +17,8 @@
                         </div>
                         <div class="row">
                             <%
+                            	// Commented out for Javascript Manipulation
+                            	/*
                             	String name = null, role = null, state = null;
                             	Integer age = null;
                             	try {
@@ -40,6 +43,7 @@
                             	}
                             	if (name != null && age != null && role != null && state != null)
                                     out.println(helpers.SignupHelper.signup(name, age, role, state));
+                            	*/
                             %>
                             <jsp:include page="/html/signup-form.html" />
                         </div>
