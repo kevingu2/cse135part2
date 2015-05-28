@@ -41,7 +41,24 @@ public class SignupHelper {
                 + "</td></tr></table>";
         return HelperUtils.printSuccess(output);
     }
-
+    public static boolean existName(String name) throws SQLException {
+    	Connection conn = null;
+        String query = "SELECT id FROM users WHERE name=\'" + name + "\'";
+        try {
+            conn = HelperUtils.connect();
+        } catch (Exception e) {
+            System.out.println("Could not register PostgreSQL JDBC driver with the DriverManager");
+        }
+        Statement stmt = conn.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        if (rs.next()) {
+        	System.out.println("User Exists");
+            return true;
+        } else {
+        	System.out.println("New User");
+            return false;
+        }
+    }
     public static int getStateId(String stateName) throws SQLException {
         // Look up the state id.
         Connection conn = null;

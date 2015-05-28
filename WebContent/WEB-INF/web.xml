@@ -3,6 +3,10 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 	<servlet>
+		<servlet-name>date</servlet-name>
+		<jsp-file>/jsp/date.jsp</jsp-file>
+	</servlet>
+	<servlet>
 		<servlet-name>signup</servlet-name>
 		<jsp-file>/jsp/signup.jsp</jsp-file>
 	</servlet>
@@ -38,6 +42,10 @@
 		<servlet-name>confirm</servlet-name>
 		<jsp-file>/jsp/confirmation.jsp</jsp-file>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>date</servlet-name>
+		<url-pattern>/date</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>signup</servlet-name>
 		<url-pattern>/signup</url-pattern>
