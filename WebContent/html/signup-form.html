@@ -1,22 +1,23 @@
+
 <div class="container">
-		<div id = "existUser"></div>
+    <!--  <form onsubmit="return validate()"> -->
         <table align="center">
-            <tr>
+            <tr id="nameTag">
                 <td>Name:</td>
                 <td><input type="text" id="name" name="name"></td>
             </tr>
-            <tr>
+            <tr id="roleTag">
                 <td>Role:</td>
                 <td><select id="role" name="role">
                         <option>owner</option>
                         <option>customer</option>
                 </select></td>
             </tr>
-            <tr>
+            <tr id="ageTag">
                 <td>Age:</td>
                 <td><input type="text" id="age" name="age"></td>
             </tr>
-            <tr>
+            <tr id="stateTag">
                 <td>State:</td>
                 <td><select id="state" name="state">
                         <option>Alabama</option>
@@ -72,8 +73,8 @@
                 </select></td>
             </tr>
             <tr>
-                <td><input type="submit" value="Signup"></td>
+                <td><input onClick="validate(null, 'submit');" type="button" value="Submit"></td>
             </tr>
         </table>
-    </form>
+    <!--  </form> -->
 </div>

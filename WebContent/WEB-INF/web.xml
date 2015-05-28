@@ -7,6 +7,10 @@
 		<jsp-file>/jsp/date.jsp</jsp-file>
 	</servlet>
 	<servlet>
+		<servlet-name>existUser</servlet-name>
+		<jsp-file>/jsp/existUser.jsp</jsp-file>
+	</servlet>
+	<servlet>
 		<servlet-name>signup</servlet-name>
 		<jsp-file>/jsp/signup.jsp</jsp-file>
 	</servlet>
@@ -42,6 +46,10 @@
 		<servlet-name>confirm</servlet-name>
 		<jsp-file>/jsp/confirmation.jsp</jsp-file>
 	</servlet>
+	<servlet-mapping>
+		<servlet-name>existUser</servlet-name>
+		<url-pattern>/existUser</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>date</servlet-name>
 		<url-pattern>/date</url-pattern>
