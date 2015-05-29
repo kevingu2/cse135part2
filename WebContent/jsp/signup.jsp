@@ -18,7 +18,7 @@
                         <div class="row">
                             <%
                             	// Commented out for Javascript Manipulation
-                            	/*
+                            	
                             	String name = null, role = null, state = null;
                             	Integer age = null;
                             	try {
@@ -43,7 +43,7 @@
                             	}
                             	if (name != null && age != null && role != null && state != null)
                                     out.println(helpers.SignupHelper.signup(name, age, role, state));
-                            	*/
+                            
                             %>
                             <jsp:include page="/html/signup-form.html" />
                         </div>
