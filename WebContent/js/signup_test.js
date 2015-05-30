@@ -34,6 +34,7 @@ function validate(id, actionType)
 		if(xmlHttp.readyState==4)
 		{ 
 		   if(xmlHttp.responseText.trim()=="true"){
+			   	error=true;
 				if(document.getElementById("existName") == null)
 				{
 					var badName = document.createElement('tr');
@@ -47,10 +48,28 @@ function validate(id, actionType)
 		   {
 			   var child = document.getElementById("existName");
 			   child.parentNode.removeChild(child);
-				if(!error)
-				{
-					alert("Form filled successfully.")
-				}
+		   }
+		   if(!error)
+		   {
+			   output="<div class=\"alert alert-success\">"
+			   output += "<h4>Registered successfully!</h4> <br>";
+			   output += "<table><tr><td>Name:</td><td>" + name + "</td></tr><tr><td>Role:</td><td>" + role
+                + "</td></tr><tr><td>Age:</td><td>" + age + "</td></tr><tr><td>State:</td><td>" + state
+                + "</td></tr></table></div>";
+			   var success = document.createElement('div');
+			   success.id = 'success';
+			   success.innerHTML = output;
+			   var nameChild = document.getElementById('nameTag');
+			   nameChild.parentNode.insertBefore(success,nameChild);
+			   document.getElementById("name").value='';
+			   document.getElementById("role").value='owner';
+			   document.getElementById("age").value='';
+			   document.getElementById("state").value='Alabama';
+			   var xmlHttpPost;
+			   
+			   xmlHttpPost=new XMLHttpRequest();
+			   xmlHttpPost.open("Post","signup?name="+name+"&role="+role+"&age="+age+"&state="+state,true);
+			   xmlHttpPost.send(null);
 		   }
 		}
 	}
