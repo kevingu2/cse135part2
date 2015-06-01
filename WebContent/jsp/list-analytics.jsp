@@ -1,4 +1,5 @@
 <!-- Put your Project 2 code here -->
+<jsp:include page="/html/head.html" />
 <%@page
     import="java.util.List"
     import="helpers.*"%>
@@ -25,12 +26,12 @@
 <%
 	// Constants for number of rows and columns on the page
 	long start = System.currentTimeMillis();
-	int rowNum = 20;
-	int colNum = 10;
+	int rowNum = 50;
+	int colNum = 50;
 
 	// Request Parameters
-	String RowType = request.getParameter("RowType");
-	String OrderBy = request.getParameter("OrderBy");
+	String RowType = "States";//request.getParameter("RowType");
+	String OrderBy = "Top-K"; //request.getParameter("OrderBy");
 	String CategoryFilter = request.getParameter("CategoryFilter");
 	String poffset = request.getParameter("poffset");
 	String roffset = request.getParameter("roffset");
@@ -271,6 +272,7 @@
 		</tbody>	
 		</table>
 		<!-- End of Customer Top-K Report -->
+<!-------------------------------------PART 3 CODE STARTS HERE------------------------------------------>
 <%
 		}
 		else
@@ -285,7 +287,7 @@
 				Rows = StateHelper.listStatesByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
 %>
-			<%if(Rows.size()>=rowNum){ %>
+			<%if(false/*Rows.size()>=rowNum*/){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -297,7 +299,7 @@
 					<input type="submit" value="Next <%= rowNum %> <%= RowType %>">
 				</form>
 			<%}%>
-			<%if(Products.size()>=colNum){ %>
+			<%if(false /*Products.size()>=colNum*/){ %>
 				<form action="analytics" method="post">
 					<input type="hidden" name="RowType" value="<%= RowType %>">
 					<input type="hidden" name="OrderBy" value="<%= OrderBy %>">
@@ -309,6 +311,13 @@
 					<input type="submit" value="Next <%= colNum %> Products">
 				</form>
 			<%}%>
+			
+		<!-- Refresh Button Below -->
+		<input type="button" onClick="refresh();" value="Refresh Table">
+		<br>
+		<br>
+		<!-- Refresh Button Above -->
+		
 		<!-- State Top-K Report -->
 		<table class="table table-striped" align="center" border="1">
 		<thead>
@@ -319,19 +328,19 @@
 			<tr>
 				<th><%= RowType %>(Below)</th>
 				<% for(int i = 0; i < Products.size(); i++){ %>
-				<td align="center"><B><%= Products.get(i).getName() %>(<%= Products.get(i).getTotal() %>)</B></th>
+				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<%= Products.get(i).getTotal() %>)</B></th>
 				<% } %>
 			</tr>
 		</thead>
 		<tbody>
 			<% for(int i = 0; i < Rows.size(); i++){ 
 				State s = Rows.get(i); %>
-				<tr>
+				<tr id="r<%= s.getId()%>">
 					<th><%= s.getName() %>(<%= s.getTotal() %>)</th>
 					<% for(int j = 0; j < Products.size(); j++){
 						Product p = Products.get(j); %>
-						<td align="center"><%= ListProductHelper.getStateProductTotal(s.getId(), p.getId()) %></td>
-					<% } %>
+						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= ListProductHelper.getStateProductTotal(s.getId(), p.getId()) %></td>
+					<% System.out.println(s.getId() + "_" + p.getId());} %>
 				</tr>
 			<% } %>
 		</tbody>	
