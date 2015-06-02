@@ -10,6 +10,7 @@
 	long start = System.currentTimeMillis();
 	int rowNum = 50;
 	int colNum = 50;
+	
 
 	// Request Parameters
 	String RowType = "States";//request.getParameter("RowType");
@@ -29,7 +30,7 @@
 %>
 <%	
 	List<Product> Products;
-	
+	//TODO: ADD COUNT HIDDEN FIELD
 	if(OrderBy.equals("Alphabetical")) //Alphabetical
 	{
 		if(CategoryFilter.equals("All Categories")) //No Filter
@@ -286,9 +287,8 @@ for(int j = 0; j < Rows.size(); j++){
 		System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
 	}
 }
-//TODO: BUG In the database, top_k products with filter returns extra products even thought products arent in the category
 //example of using cell query with filter run with category as 248
-/*HashMap<String, Integer> totalsWithFilter=ListProductHelper.stateProductTotalForTopKWithFilter(248, 50, 0);
+HashMap<String, Integer> totalsWithFilter=ListProductHelper.stateProductTotalForTopKWithFilter(248, 50, 0);
 for(int j = 0; j < Rows.size(); j++){ 
 	State s = Rows.get(j);
 	Integer sid=s.getId();
@@ -302,7 +302,7 @@ for(int j = 0; j < Rows.size(); j++){
 			System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
 		}
 	}
-}*/
+}
 %>
 			<%if(false/*Rows.size()>=rowNum*/){ %>
 				<form action="analytics" method="post">
