@@ -14,8 +14,8 @@
 <% if(request.getParameter("Hide")==null){ %>
 
             <form action="analytics" method="post">
-<!--
             <input type="hidden" name="Run" value="Run"> 
+<!--
             <b>List By:</b>
             <select name="RowType" id="RowType">
             	<option value="Customers" <% if(RowType!=null && RowType.equals("Customers")){ %>selected<% } %>>Customers</option>

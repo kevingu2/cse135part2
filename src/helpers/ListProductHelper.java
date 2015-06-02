@@ -298,8 +298,14 @@ public class ListProductHelper {
             return 0;
         } finally {
             try {
-                stmt.close();
-                conn.close();
+            	if(stmt != null)
+            	{
+            		stmt.close();
+            	}
+            	if(conn != null)
+            	{
+            		conn.close();
+            	}
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -336,8 +342,14 @@ public class ListProductHelper {
             return 0;
         } finally {
             try {
-                stmt.close();
-                conn.close();
+            	if(stmt != null)
+            	{
+            		stmt.close();
+            	}
+            	if(conn != null)
+            	{
+            		conn.close();
+            	}
             } catch (SQLException e) {
                 e.printStackTrace();
             }
