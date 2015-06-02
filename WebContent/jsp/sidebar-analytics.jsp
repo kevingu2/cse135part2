@@ -12,7 +12,9 @@
                 String CategoryFilter = request.getParameter("CategoryFilter");
             %>
 <% if(request.getParameter("Hide")==null){ %>
+
             <form action="analytics" method="post">
+<!--
             <input type="hidden" name="Run" value="Run"> 
             <b>List By:</b>
             <select name="RowType" id="RowType">
@@ -26,6 +28,7 @@
             	<option value="Top-K" <% if(OrderBy!=null && OrderBy.equals("Top-K")){ %>selected<% } %>>Top-K</option>
             </select>
             <br>
+-->
             <b>Category Filter:</b>
             <select name="CategoryFilter" id="CategoryFilter">
             	<option value="All Categories">All Categories</option>

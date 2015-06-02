@@ -25,12 +25,12 @@
 <%
 	// Constants for number of rows and columns on the page
 	long start = System.currentTimeMillis();
-	int rowNum = 20;
-	int colNum = 10;
+	int rowNum = 50;
+	int colNum = 50;
 
 	// Request Parameters
-	String RowType = request.getParameter("RowType");
-	String OrderBy = request.getParameter("OrderBy");
+	String RowType = "States"; //request.getParameter("RowType");
+	String OrderBy = "Top-K"; //request.getParameter("OrderBy");
 	String CategoryFilter = request.getParameter("CategoryFilter");
 	String poffset = request.getParameter("poffset");
 	String roffset = request.getParameter("roffset");
@@ -273,6 +273,7 @@
 		<!-- End of Customer Top-K Report -->
 <%
 		}
+///////////////////////////////////////////////// PART 3: STATES TOP-K /////////////////////////////////////////////////
 		else
 		{
 			List<State> Rows;
