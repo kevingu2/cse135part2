@@ -328,7 +328,7 @@
 			<tr>
 				<th><%= RowType %>(Below)</th>
 				<% for(int i = 0; i < Products.size(); i++){ %>
-				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<%= Products.get(i).getTotal() %>)</B></th>
+				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" style="color:'black'"><div id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></div></font>)</B></th>
 				<% } %>
 			</tr>
 		</thead>
@@ -336,7 +336,7 @@
 			<% for(int i = 0; i < Rows.size(); i++){ 
 				State s = Rows.get(i); %>
 				<tr id="r<%= s.getId()%>">
-					<th><%= s.getName() %>(<%= s.getTotal() %>)</th>
+					<th><%= s.getName() %>(<font id="r<%= s.getId()%>font" style="color:'black'"><div id="r<%= s.getId()%>num"><%= s.getTotal() %></div></font>)</th>
 					<% for(int j = 0; j < Products.size(); j++){
 						Product p = Products.get(j); %>
 						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= ListProductHelper.getStateProductTotal(s.getId(), p.getId()) %></td>
