@@ -157,21 +157,15 @@ public class StateHelper {
 	                System.err.println("Internal Server Error. This shouldn't happen.");
 	                return new ArrayList<State>();
 	            }
-	            String query= "Select st.name, st.id, coalesce(r.total, 0) as total "
-	            		+ "From states st left outer join (Select u.state, SUM(s.quantity*s.price) as total "
-	            		+ "From sales s, users u, products p Where p.cid = ? AND s.uid = u.id "
-	            		+ "AND s.pid = p.id Group by u.state Order by total desc) r on r.state = st.id "
-	            		+ "Order by total desc limit ? offset ?";
+	            String query= "SELECT sid, name, total FROM TopK_States WHERE cid = ? ORDER by total DESC;";
 	    
 	            stmt = conn.prepareStatement(query);
 	            stmt.setInt(1,category_filter);
-	            stmt.setInt(2,limit);
-	            stmt.setInt(3,offset);
 	            rs = stmt.executeQuery();
 	            while (rs.next()) {
-	                String name= rs.getString(1);
-	                Integer id = rs.getInt(2);
-	                Integer total=rs.getInt(3);
+	                String name= rs.getString("name");
+	                Integer id = rs.getInt("sid");
+	                Integer total=rs.getInt("total");
 	                states.add(new State(id, name, total));
 	            }
 	            return states;
@@ -201,19 +195,13 @@ public class StateHelper {
 	                System.err.println("Internal Server Error. This shouldn't happen.");
 	                return new ArrayList<State>();
 	            }
-	            String query= "Select st.name, st.id, coalesce(r.total, 0) as total "
-	            		+ "From states st left outer join (Select u.state, SUM(s.quantity*s.price) as total "
-	            		+ "From sales s, users u, products p where s.uid = u.id AND s.pid = p.id "
-	            		+ "Group by u.state Order by total desc) r on r.state = st.id "
-	            		+ "Order by total desc  limit ? offset ?";
+	            String query= "SELECT sid, name, total FROM TopK_States WHERE cid = -1 ORDER by total DESC;";
 	            stmt = conn.prepareStatement(query);
-	            stmt.setInt(1,limit);
-	            stmt.setInt(2,offset);
 	            rs = stmt.executeQuery();
 	            while (rs.next()) {
-	                String name= rs.getString(1);
-	                Integer id = rs.getInt(2);
-	                Integer total=rs.getInt(3);
+	                String name= rs.getString("name");
+	                Integer id = rs.getInt("sid");
+	                Integer total=rs.getInt("total");
 	                states.add(new State(id, name, total));
 	            }
 	            return states;

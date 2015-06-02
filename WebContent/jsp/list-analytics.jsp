@@ -2,27 +2,9 @@
 <jsp:include page="/html/head.html" />
 <%@page
     import="java.util.List"
+    import="java.util.ArrayList"
+    import="java.util.HashMap"
     import="helpers.*"%>
-<%
-//example of using the methods
-/*
-    System.out.println("analytics");
-	List<State> states = StateHelper.listStatesByTotalWithNoFilter(20, 0);
-	for(State state: states){
-		System.out.println("id: "+state.getId()+"    name: "+state.getName()+"     total: "+state.getTotal());
-	}
-	List<Customer> customers=CustomerHelper.listCustomersByTotalWithNoFilter(20, 0);
-	for(Customer customer: customers){
-		System.out.println("id: "+customer.getId()+"    name: "+customer.getName()+"     total: "+customer.getTotal());
-	}
-	List<Product> products=ListProductHelper.listProductsByTotalWithNoFilter(20, 0);
-	for(Product product: products){
-		System.out.println("id: "+product.getId()+"    name: "+product.getName()+"     total: "+product.getTotal());
-	}
-	System.out.println("Get User product total: "+ListProductHelper.getUserProductTotal(3515,346));
-	System.out.println("Get State product total: "+ListProductHelper.getUserProductTotal(3,346));
-*/
-%>
 <%
 	// Constants for number of rows and columns on the page
 	long start = System.currentTimeMillis();
@@ -278,6 +260,7 @@
 ///////////////////////////////////////////////// PART 3: STATES TOP-K /////////////////////////////////////////////////
 		else
 		{
+			
 			List<State> Rows;
 			if(CategoryFilter.equals("All Categories")) //No Filter
 			{
@@ -287,6 +270,39 @@
 			{
 				Rows = StateHelper.listStatesByTotalWithFilter(Integer.parseInt(CategoryFilter), rowNum, Integer.parseInt(roffset));
 			}
+			
+			
+%>
+<%
+//example of using cell query with no filter run with all category
+HashMap<String, Integer> totalsNoFilter=ListProductHelper.stateProductTotalForTopKWithNoFilter(50, 0);
+for(int j = 0; j < Rows.size(); j++){ 
+	State s = Rows.get(j);
+	Integer sid=s.getId();
+	for(int i = 0; i < Products.size(); i++){
+		Product p=Products.get(i);
+		Integer pid=p.getId();
+		Integer total= totalsNoFilter.get(sid.toString()+"_"+pid.toString());
+		System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
+	}
+}
+//TODO: BUG In the database, top_k products with filter returns extra products even thought products arent in the category
+//example of using cell query with filter run with category as 248
+/*HashMap<String, Integer> totalsWithFilter=ListProductHelper.stateProductTotalForTopKWithFilter(248, 50, 0);
+for(int j = 0; j < Rows.size(); j++){ 
+	State s = Rows.get(j);
+	Integer sid=s.getId();
+	for(int i = 0; i < Products.size(); i++){
+		Product p=Products.get(i);
+		Integer pid=p.getId();
+		Integer total= totalsWithFilter.get(sid.toString()+"_"+pid.toString());
+		if(total==null){
+			System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+0);
+		}else{
+			System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
+		}
+	}
+}*/
 %>
 			<%if(false/*Rows.size()>=rowNum*/){ %>
 				<form action="analytics" method="post">
@@ -332,7 +348,7 @@
 				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" style="color:'black'"><div id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></div></font>)</B></th>
 				<% } %>
 			</tr>
-		</thead>
+		</thead> 
 		<tbody>
 			<% for(int i = 0; i < Rows.size(); i++){ 
 				State s = Rows.get(i); %>
@@ -341,7 +357,7 @@
 					<% for(int j = 0; j < Products.size(); j++){
 						Product p = Products.get(j); %>
 						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= ListProductHelper.getStateProductTotal(s.getId(), p.getId()) %></td>
-					<% System.out.println(s.getId() + "_" + p.getId());} %>
+					<% } %>
 				</tr>
 			<% } %>
 		</tbody>	

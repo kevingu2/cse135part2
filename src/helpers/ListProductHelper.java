@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListProductHelper {
@@ -202,17 +203,15 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select p.name, p.id, SUM(s.price*s.quantity) as total "
-            		+ "From sales s, products p Where s.pid = p.id Group by p.id, p.name "
-            		+ "Order by total desc limit ? offset ?";
+            String query= "SELECT pid, name, total FROM TopK_Products WHERE cid = -1 ORDER by total DESC LIMIT ? OFFSET ?;";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1,limit);
             stmt.setInt(2, offset);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                String name = rs.getString(1);
-                Integer id = rs.getInt(2);
-                Integer total=rs.getInt(3);
+                String name = rs.getString("name");
+                Integer id = rs.getInt("pid");
+                Integer total=rs.getInt("total");
                 products.add(new Product(id, name,total));
             }
             return products;
@@ -242,18 +241,16 @@ public class ListProductHelper {
                 System.err.println("Internal Server Error. This shouldn't happen.");
                 return new ArrayList<Product>();
             }
-            String query= "Select p.name, p.id, SUM(s.price*s.quantity) as total "
-            		+ "From sales s, products p Where p.cid = ? And s.pid = p.id "
-            		+ "Group by p.id, p.name Order by total desc limit ? offset ?";
+            String query= "SELECT pid, name, total FROM TopK_Products WHERE cid = ? ORDER by total DESC LIMIT ? OFFSET ?;";
             stmt = conn.prepareStatement(query);
             stmt.setInt(1, category_id);
             stmt.setInt(2,limit);
             stmt.setInt(3, offset);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                String name = rs.getString(1);
-                Integer id = rs.getInt(2);
-                Integer total=rs.getInt(3);
+                String name = rs.getString("name");
+                Integer id = rs.getInt("pid");
+                Integer total=rs.getInt("total");
                 products.add(new Product(id, name,total));
             }
             return products;
@@ -312,6 +309,97 @@ public class ListProductHelper {
         }
     }
 	
+	//Get all the totals for each cell with filter, HashMap key is sid_pid, separated by the underscore _
+			public static HashMap<String, Integer> stateProductTotalForTopKWithFilter(int cid,int limit, int offset){
+				Connection conn = null;
+		        PreparedStatement stmt = null;
+		        ResultSet rs = null;
+
+		        HashMap<String, Integer> totals= new HashMap<String, Integer>();
+		        try {
+		            try {
+		                conn = HelperUtils.connect();
+		            } catch (Exception e) {
+		                System.err.println("Internal Server Error. This shouldn't happen.");
+		                return totals;
+		            }
+		            String query= "SELECT s.sid, tp.pid,sp_total FROM (SELECT sid, total as s_total "
+		            		+ "FROM TopK_States WHERE cid = ? ORDER by total DESC) s "
+		            		+ "left outer join "
+		            		+ "(SELECT sp.sid,p.pid,  p.total as p_total, sp.total as sp_total "
+		            		+ "FROM (SELECT pid, total FROM TopK_Products WHERE cid = ? "
+		            		+ "ORDER by total DESC LIMIT ? OFFSET ?) p "
+		            		+ "left outer join StatesxProducts sp on p.pid=sp.pid)tp on s.sid=tp.sid ";
+		            stmt = conn.prepareStatement(query);
+		            stmt.setInt(1,cid);
+		            stmt.setInt(2,cid);
+		            stmt.setInt(3,limit);
+		            stmt.setInt(4, offset);
+		            rs = stmt.executeQuery();
+		            while (rs.next()) {
+		                Integer sid = rs.getInt("sid");
+		                Integer pid = rs.getInt("pid");
+		                Integer total=rs.getInt("sp_total");
+		                totals.put(sid.toString()+"_"+pid.toString(), total);
+		                //System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
+		            }
+		            return totals;
+		        } catch (Exception e) {
+		            System.err.println("Some error happened!<br/>" + e.getLocalizedMessage());
+		            return new HashMap<String, Integer>();
+		        } finally {
+		            try {
+		                stmt.close();
+		                conn.close();
+		            } catch (SQLException e) {
+		                e.printStackTrace();
+		            }
+		        }
+			}
+	//Get all the totals for each cell with no filter, HashMap key is sid_pid, separated by the underscore _
+		public static HashMap<String, Integer> stateProductTotalForTopKWithNoFilter(int limit, int offset){
+			Connection conn = null;
+	        PreparedStatement stmt = null;
+	        ResultSet rs = null;
+
+	        HashMap<String, Integer> totals= new HashMap<String, Integer>();
+	        try {
+	            try {
+	                conn = HelperUtils.connect();
+	            } catch (Exception e) {
+	                System.err.println("Internal Server Error. This shouldn't happen.");
+	                return totals;
+	            }
+	            String query= "SELECT s.sid, tp.pid,sp_total FROM (SELECT sid, total as s_total "
+	            		+ "FROM TopK_States WHERE cid = -1 ORDER by total DESC) s "
+	            		+ "left outer join "
+	            		+ "(SELECT sp.sid,p.pid,  p.total as p_total, sp.total as sp_total  "
+	            		+ "FROM (SELECT pid, total FROM TopK_Products WHERE cid = -1 "
+	            		+ "ORDER by total DESC LIMIT ? OFFSET ?) p "
+	            		+ "left outer join StatesxProducts sp on p.pid=sp.pid)tp on s.sid=tp.sid ";
+	            stmt = conn.prepareStatement(query);
+	            stmt.setInt(1,limit);
+	            stmt.setInt(2, offset);
+	            rs = stmt.executeQuery();
+	            while (rs.next()) {
+	                Integer sid = rs.getInt("sid");
+	                Integer pid = rs.getInt("pid");
+	                Integer total=rs.getInt("sp_total");
+	                totals.put(sid.toString()+"_"+pid.toString(), total);
+	            }
+	            return totals;
+	        } catch (Exception e) {
+	            System.err.println("Some error happened!<br/>" + e.getLocalizedMessage());
+	            return new HashMap<String, Integer>();
+	        } finally {
+	            try {
+	                stmt.close();
+	                conn.close();
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+		}
 	//returns the total value of the product bought by the state
 	public static int getStateProductTotal(int state_id, int pid) {
         Connection conn = null;
