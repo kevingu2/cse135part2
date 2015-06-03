@@ -2,6 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <jsp:include page="/html/head.html" />
+<%@page
+    import="helpers.*"%>
 </head>
 <%
     boolean nameNotNull = session.getAttribute("name") != null;
@@ -54,6 +56,7 @@
                                 <!-- End of Report Creation -->
                                 
                                 <%
+                                request.getSession().setAttribute("time",FindModifiedCellsHelper.getCurrentTimeStamp());
                                     } else {
                                 %>
                                 <div class="alert alert-info">

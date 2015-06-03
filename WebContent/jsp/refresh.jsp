@@ -7,10 +7,10 @@
 	int old_count=FindModifiedCellsHelper.getOldCount();
 	int new_count=FindModifiedCellsHelper.getNewCount();
 	//System.out.println("" + old_count + " compared to " + new_count);
-	if(old_count != new_count)
-	{
 		FindModifiedCellsHelper.updateTempTables(old_count);
-		ArrayList<Total> cells = FindModifiedCellsHelper.getModifiedTotals();
+		String time = (String) request.getSession().getAttribute("time");
+		ArrayList<Total> cells = FindModifiedCellsHelper.getModifiedTotals(time);
+		request.getSession().setAttribute("time",FindModifiedCellsHelper.getCurrentTimeStamp());
 		JSONArray result = new JSONArray();
 		for(int i = 0; i < cells.size(); i++)
 		{
@@ -20,8 +20,8 @@
 			result.put(pair);
 			//JSONArray a = new JSONArray(Arrays.asList(array));
 		}
+		
 		out.print(result);
-	}
 /*
 	ArrayList<Total> cells = FindModifiedCellsHelper.getModifiedTotals();
 	JSONArray result = new JSONArray();
