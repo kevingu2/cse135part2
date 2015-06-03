@@ -275,7 +275,6 @@
 			
 %>
 <%
-int count = -1;
 HashMap<String, Integer> totals;
 if(CategoryFilter.equals("All Categories"))
 {
@@ -316,19 +315,20 @@ for(int j = 0; j < Rows.size(); j++){
 }*/
 
 int old_count=FindModifiedCellsHelper.getOldCount();
-System.out.println("old count:"+old_count);
 int new_count=FindModifiedCellsHelper.getNewCount();
-System.out.println("new count:"+new_count);
+//System.out.println("new count:"+new_count);
 //if old count and new count is the same, don't do anything
 //if different Run updateTempTables
-//Call when you click run query or refresh button, 
-FindModifiedCellsHelper.updateTempTables(24999);
+//Call when you click run query or refresh button,
+FindModifiedCellsHelper.updateTempTables(old_count);
+/*
 ArrayList<Total> m_cells=FindModifiedCellsHelper.getModifiedTotals();
 for(int i=0 ; i<m_cells.size();i++){
 	Total total=m_cells.get(i);
 	System.out.println("sid: "+total.getSid().toString()+"     pid: "+total.getPid().toString()+"       total: "+total.getTotal().toString());
 }
 */
+
 %>
 			<%if(false/*Rows.size()>=rowNum*/){ %>
 				<form action="analytics" method="post">
@@ -356,7 +356,7 @@ for(int i=0 ; i<m_cells.size();i++){
 			<%}%>
 			
 		<!-- Refresh Button Below -->
-		<input type="button" onClick="refresh(<%= count%>);" value="Refresh Table">
+		<input type="button" onClick="refresh('<%= CategoryFilter %>');" value="Refresh Table">
 		<br>
 		<br>
 		<!-- Refresh Button Above -->
@@ -371,7 +371,7 @@ for(int i=0 ; i<m_cells.size();i++){
 			<tr>
 				<th><%= RowType %>(Below)</th>
 				<% for(int i = 0; i < Products.size(); i++){ %>
-				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" style="color:'black'"><font id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></font></font>)</B></th>
+				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" class="refresh" style="color:'black'"><font id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></font></font>)</B></th>
 				<% } %>
 			</tr>
 		</thead> 
@@ -379,10 +379,10 @@ for(int i=0 ; i<m_cells.size();i++){
 			<% for(int i = 0; i < Rows.size(); i++){ 
 				State s = Rows.get(i); %>
 				<tr id="r<%= s.getId()%>">
-					<th><%= s.getName() %>(<font id="r<%= s.getId()%>font" style="color:'black'"><font id="r<%= s.getId()%>num"><%= s.getTotal() %></font></font>)</th>
+					<th><%= s.getName() %>(<font id="r<%= s.getId()%>font" class="refresh" style="color:'black'"><font id="r<%= s.getId()%>num"><%= s.getTotal() %></font></font>)</th>
 					<% for(int j = 0; j < Products.size(); j++){
 						Product p = Products.get(j); %>
-						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= totals.get("" + s.getId() + "_" + p.getId())/*ListProductHelper.getStateProductTotal(s.getId(), p.getId())*/ %></td>
+						<td style="color:'black'" class="refresh" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= totals.get("" + s.getId() + "_" + p.getId())/*ListProductHelper.getStateProductTotal(s.getId(), p.getId())*/ %></td>
 					<% } %>
 				</tr>
 			<% } %>

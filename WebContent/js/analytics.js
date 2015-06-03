@@ -1,7 +1,7 @@
 /**
  * 
  */
-function refresh(count)
+function refresh(CategoryFilter)
 {
 	//alert("Please add refresh code to analytics.js.\nThis button currently toggles the State names between red and black.");
 	/*
@@ -42,12 +42,11 @@ function refresh(count)
 	*/
 	
 	// Get rid of all previous red text TODO
-	/*
-	for(var i = 0; i < redList.length; i++)
+	var elementList = document.getElementsByClassName("refresh");
+	for(var i = 0; i < elementList.length; i++)
 	{
-		redList[i].style["color"] = "red";
+		elementList[i].style["color"] = "black";
 	}
-	*/
 	
 	var xmlHttp;
 	xmlHttp=new XMLHttpRequest();
@@ -55,13 +54,35 @@ function refresh(count)
 	{
 		if(xmlHttp.readyState==4)
 		{
-			if(xmlHttp.responseText.trim()=="Hello World!")
+			var response = eval(xmlHttp.responseText);
+			for(var i = 0; i < response.length; i++)
 			{
-				alert("Hello World!");
+				var idCell = response[i][0];
+				var idc = idCell.split("_")[1];
+				var idr = idCell.split("_")[0];
+				var total = response[i][1];
+				var cell = document.getElementById("" + idCell);
+				var rowFont = document.getElementById("" + idr + "font");
+				var rowNum = document.getElementById("" + idr + "num");
+				var colFont = document.getElementById("" + idc + "font");
+				var colNum = document.getElementById("" + idc + "num");
+				//alert("cell: " + idCell + " total: " + total);
+				if(cell != null)
+				{
+					cell.style["color"] = "red";
+					cell.innerHTML = parseInt(cell.innerHTML) + parseInt(total);
+					colFont.style["color"] = "red";
+					colNum.innerHTML = parseInt(colNum.innerHTML) + parseInt(total);
+				}
+				if(cell != null || CategoryFilter == "All Categories")
+				{
+					rowFont.style["color"] = "red";
+					rowNum.innerHTML = parseInt(rowNum.innerHTML) + parseInt(total);
+				}
 			}
 		}
 	}
-	
+		
 	xmlHttp.onreadystatechange = responseHandler;
 	xmlHttp.open("GET","refresh",true);
 	xmlHttp.send(null);
