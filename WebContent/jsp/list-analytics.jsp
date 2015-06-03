@@ -275,6 +275,17 @@
 			
 %>
 <%
+int count = -1;
+HashMap<String, Integer> totals;
+if(CategoryFilter.equals("All Categories"))
+{
+	totals = ListProductHelper.stateProductTotalForTopKWithNoFilter(50, 0);
+}
+else
+{
+	totals = ListProductHelper.stateProductTotalForTopKWithFilter(Integer.parseInt(CategoryFilter), 50, 0);
+}
+/*
 //example of using cell query with no filter run with all category
 HashMap<String, Integer> totalsNoFilter=ListProductHelper.stateProductTotalForTopKWithNoFilter(50, 0);
 for(int j = 0; j < Rows.size(); j++){ 
@@ -303,6 +314,7 @@ for(int j = 0; j < Rows.size(); j++){
 		}
 	}
 }
+*/
 %>
 			<%if(false/*Rows.size()>=rowNum*/){ %>
 				<form action="analytics" method="post">
@@ -330,7 +342,7 @@ for(int j = 0; j < Rows.size(); j++){
 			<%}%>
 			
 		<!-- Refresh Button Below -->
-		<input type="button" onClick="refresh();" value="Refresh Table">
+		<input type="button" onClick="refresh(<%= count%>);" value="Refresh Table">
 		<br>
 		<br>
 		<!-- Refresh Button Above -->
@@ -345,7 +357,7 @@ for(int j = 0; j < Rows.size(); j++){
 			<tr>
 				<th><%= RowType %>(Below)</th>
 				<% for(int i = 0; i < Products.size(); i++){ %>
-				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" style="color:'black'"><div id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></div></font>)</B></th>
+				<td align="center" id="c<%= Products.get(i).getId() %>"><B><%= Products.get(i).getName() %>(<font id="c<%= Products.get(i).getId()%>font" style="color:'black'"><font id="c<%= Products.get(i).getId()%>num"><%= Products.get(i).getTotal() %></font></font>)</B></th>
 				<% } %>
 			</tr>
 		</thead> 
@@ -353,10 +365,10 @@ for(int j = 0; j < Rows.size(); j++){
 			<% for(int i = 0; i < Rows.size(); i++){ 
 				State s = Rows.get(i); %>
 				<tr id="r<%= s.getId()%>">
-					<th><%= s.getName() %>(<font id="r<%= s.getId()%>font" style="color:'black'"><div id="r<%= s.getId()%>num"><%= s.getTotal() %></div></font>)</th>
+					<th><%= s.getName() %>(<font id="r<%= s.getId()%>font" style="color:'black'"><font id="r<%= s.getId()%>num"><%= s.getTotal() %></font></font>)</th>
 					<% for(int j = 0; j < Products.size(); j++){
 						Product p = Products.get(j); %>
-						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= ListProductHelper.getStateProductTotal(s.getId(), p.getId()) %></td>
+						<td style="color:'black'" align="center" id="r<%= s.getId()%>_c<%= p.getId()%>"><%= totals.get("" + s.getId() + "_" + p.getId())/*ListProductHelper.getStateProductTotal(s.getId(), p.getId())*/ %></td>
 					<% } %>
 				</tr>
 			<% } %>
