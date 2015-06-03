@@ -287,7 +287,7 @@ else
 }
 /*
 //example of using cell query with no filter run with all category
-HashMap<String, Integer> totalsNoFilter=ListProductHelper.stateProductTotalForTopKWithNoFilter(50, 0);
+/*HashMap<String, Integer> totalsNoFilter=ListProductHelper.stateProductTotalForTopKWithNoFilter(50, 0);
 for(int j = 0; j < Rows.size(); j++){ 
 	State s = Rows.get(j);
 	Integer sid=s.getId();
@@ -297,9 +297,9 @@ for(int j = 0; j < Rows.size(); j++){
 		Integer total= totalsNoFilter.get(sid.toString()+"_"+pid.toString());
 		System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
 	}
-}
+}*/
 //example of using cell query with filter run with category as 248
-HashMap<String, Integer> totalsWithFilter=ListProductHelper.stateProductTotalForTopKWithFilter(248, 50, 0);
+/*HashMap<String, Integer> totalsWithFilter=ListProductHelper.stateProductTotalForTopKWithFilter(248, 50, 0);
 for(int j = 0; j < Rows.size(); j++){ 
 	State s = Rows.get(j);
 	Integer sid=s.getId();
@@ -313,6 +313,20 @@ for(int j = 0; j < Rows.size(); j++){
 			System.out.println("sid: "+sid.toString()+"     pid: "+pid.toString()+"       total: "+total.toString());
 		}
 	}
+}*/
+
+int old_count=FindModifiedCellsHelper.getOldCount();
+System.out.println("old count:"+old_count);
+int new_count=FindModifiedCellsHelper.getNewCount();
+System.out.println("new count:"+new_count);
+//if old count and new count is the same, don't do anything
+//if different Run updateTempTables
+//Call when you click run query or refresh button, 
+FindModifiedCellsHelper.updateTempTables(24999);
+ArrayList<Total> m_cells=FindModifiedCellsHelper.getModifiedTotals();
+for(int i=0 ; i<m_cells.size();i++){
+	Total total=m_cells.get(i);
+	System.out.println("sid: "+total.getSid().toString()+"     pid: "+total.getPid().toString()+"       total: "+total.getTotal().toString());
 }
 */
 %>
